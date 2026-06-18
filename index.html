@@ -751,7 +751,7 @@ async function analyzeJob(){
 공고 페이지를 직접 방문하여 내용을 읽고, 아래 JSON 형식으로만 응답해주세요. 다른 텍스트 없이 JSON만 출력하세요:
 {"co":"회사명","ind":"산업군(IT/금융/뷰티/물류/헬스케어 등)","role":"직무/직급","dl":"마감일(YYYY년 M월 D일, 없으면 확인필요)","sz":"대기업/중견기업/스타트업","kw":["키1","키2","키3","키4","키5"],"match":숫자0~100,"diff":"이 지원자의 차별화 포인트 2-3줄","cinfo":"기업 최근 동향 및 인재상 2-3줄"}`;
 
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
