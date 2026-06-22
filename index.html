@@ -743,25 +743,37 @@ async function analyzeJob(){
   jobs.unshift({id,url,co:'분석 중...',st:'지원예정',ind:'',role:'',apd:today,dl:'',s1:'서류',s2:'',s3:'',s4:'',sz:'',fin:'',kw:[],match:0,diff:'',cinfo:''});
   save();render();document.getElementById('url-input').value='';
   try{
-    const GEMINI_API_KEY = 'AQ.Ab8RN6K3SuSDogP93VgPGaibS3F2tKTZ1184siVPxRSmgap5Fg';
+    const GEMINI_API_KEY = 'AQ.Ab8RN6KmA8rNGNmMwX3f5D8UfC8pWgi2ipUezs2EIUewDdG7Qw';
     const prompt = `다음 채용공고 URL을 분석해주세요: ${url}
 
 지원자 프로필: ${prof}
 
-공고 페이지를 직접 방문하여 내용을 읽고, 아래 JSON 형식으로만 응답해주세요. 다른 텍스트 없이 JSON만 출력하세요:
-{"co":"회사명","ind":"산업군(IT/금융/뷰티/물류/헬스케어 등)","role":"직무/직급","dl":"마감일(YYYY년 M월 D일, 없으면 확인필요)","sz":"대기업/중견기업/스타트업","kw":["키1","키2","키3","키4","키5"],"match":숫자0~100,"diff":"이 지원자의 차별화 포인트 2-3줄","cinfo":"기업 최근 동향 및 인재상 2-3줄"}`;
+반드시 아래 JSON 형식으로만 응답하세요. 절대 다른 텍스트, 설명, 마크다운 없이 JSON만 출력하세요.
+{"co":"회사명","ind":"산업군예시IT","role":"직무직급","dl":"마감일YYYY년M월D일","sz":"대기업또는중견기업또는스타트업","kw":["키워드1","키워드2","키워드3","키워드4","키워드5"],"match":75,"diff":"차별화포인트2줄","cinfo":"기업동향2줄"}`;
 
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{parts:[{text:prompt}]}],
-        generationConfig:{temperature:0.1}
-      })
-    });
-    const data=await res.json();
-    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'{}';
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    let parsed = null;
+    try {
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-goog-api-key': GEMINI_API_KEY
+        },
+        body:JSON.stringify({
+          contents:[{parts:[{text:prompt}]}],
+          generationConfig:{temperature:0.1,maxOutputTokens:1000}
+        })
+      });
+      const data=await res.json();
+      console.log('Gemini response:', JSON.stringify(data));
+      const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'{}';
+      console.log('Gemini text:', text);
+      const cleaned = text.replace(/```json/g,'').replace(/```/g,'').trim();
+      parsed=JSON.parse(cleaned);
+    } catch(apiErr) {
+      console.error('Gemini API error:', apiErr);
+      throw apiErr;
+    }
     const idx=jobs.findIndex(j=>j.id===id);
     if(idx!==-1){jobs[idx]={...jobs[idx],...parsed};save();render()}
   }catch(e){
