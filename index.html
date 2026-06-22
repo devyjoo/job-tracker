@@ -743,7 +743,7 @@ async function analyzeJob(){
   jobs.unshift({id,url,co:'분석 중...',st:'지원예정',ind:'',role:'',apd:today,dl:'',s1:'서류',s2:'',s3:'',s4:'',sz:'',fin:'',kw:[],match:0,diff:'',cinfo:''});
   save();render();document.getElementById('url-input').value='';
   try{
-    const GEMINI_API_KEY = 'AQ.Ab8RN6KmA8rNGNmMwX3f5D8UfC8pWgi2ipUezs2EIUewDdG7Qw';
+    const GEMINI_API_KEY = 'AQ.Ab8RN6IlFyhR7mYdGfGDGdxEPCgGWDbZesq_Y2pn6m8HDWWXiQ';
     const prompt = `다음 채용공고 URL을 분석해주세요: ${url}
 
 지원자 프로필: ${prof}
@@ -753,8 +753,8 @@ async function analyzeJob(){
 
     let parsed = null;
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
