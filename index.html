@@ -743,7 +743,7 @@ async function analyzeJob(){
   jobs.unshift({id,url,co:'분석 중...',st:'지원예정',ind:'',role:'',apd:today,dl:'',s1:'서류',s2:'',s3:'',s4:'',sz:'',fin:'',kw:[],match:0,diff:'',cinfo:''});
   save();render();document.getElementById('url-input').value='';
   try{
-    const OPENAI_API_KEY = 'YOUR_API_KEY_HERE';
+    const OPENAI_API_KEY = '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';
     const prompt = `다음 채용공고 URL을 분석해주세요: ${url}
 
 지원자 프로필: ${prof}
